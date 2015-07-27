@@ -1,0 +1,329 @@
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="main.css"></link>
+</head>
+<body>
+	<div class="qipan">
+		<ul id="qizi_area">
+		</ul>
+	</div>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.soul.js"></script>
+	<script type="text/javascript">
+	var zu = new Career('zu');
+	var pao = new Career('pao');
+	var che = new Career('che');
+	var ma = new Career('ma');
+	var xiang = new Career('xiang');
+	var shi = new Career('shi');
+	var shuai = new Career('shuai');
+	
+	var r = new Ideology('r');
+	var b = new Ideology('b');
+
+
+	var map = $.map.instance(9, 10, 104, 100);
+
+
+	
+	var game = (function(){
+		var manual = [
+			{role:'r', career:'che', x:1, y:1},
+			{role:'r', career:'ma', x:2, y:1},
+			{role:'r', career:'xiang', x:3, y:1},
+			{role:'r', career:'shi', x:4, y:1},
+			{role:'r', career:'shuai', x:5, y:1},
+			{role:'r', career:'shi', x:6, y:1},
+			{role:'r', career:'xiang', x:7, y:1},
+			{role:'r', career:'ma', x:8, y:1},
+			{role:'r', career:'che', x:9, y:1},
+			{role:'r', career:'pao', x:2, y:3},
+			{role:'r', career:'pao', x:8, y:3},
+			{role:'r', career:'zu', x:1, y:4},
+			{role:'r', career:'zu', x:3, y:4},
+			{role:'r', career:'zu', x:5, y:4},
+			{role:'r', career:'zu', x:7, y:4},
+			{role:'r', career:'zu', x:9, y:4},
+			{role:'b', career:'che', x:1, y:10},
+			{role:'b', career:'ma', x:2, y:10},
+			{role:'b', career:'xiang', x:3, y:10},
+			{role:'b', career:'shi', x:4, y:10},
+			{role:'b', career:'shuai', x:5, y:10},
+			{role:'b', career:'shi', x:6, y:10},
+			{role:'b', career:'xiang', x:7, y:10},
+			{role:'b', career:'ma', x:8, y:10},
+			{role:'b', career:'che', x:9, y:10},
+			{role:'b', career:'pao', x:2, y:8},
+			{role:'b', career:'pao', x:8, y:8},
+			{role:'b', career:'zu', x:1, y:7},
+			{role:'b', career:'zu', x:3, y:7},
+			{role:'b', career:'zu', x:5, y:7},
+			{role:'b', career:'zu', x:7, y:7},
+			{role:'b', career:'zu', x:9, y:7}
+		];
+		var status = 0;
+		var current_pos = null;
+		var current_range = null;
+		function rangeHover(isOn){
+			current_range.forEach(function(index){
+				var pos = map.getPosByIndex(index);
+				isOn ? map.hoverOn(pos) : map.hoverOff(pos);;
+			})
+		}
+
+		function onMapClick(pos){
+			if(status == 0 && !pos.role){
+				return false;
+			}else if(status == 0 && pos.role){
+				current_pos = pos;
+				current_range = getCareerRange(current_pos);
+				map.hoverOn(current_pos);
+				rangeHover(true);
+				status = 1;
+			}else{
+				if(current_pos && current_pos.index == pos.index){
+					rangeHover(false);
+					map.hoverOff(current_pos);
+					status = 0;
+					current_pos = null;
+					current_range = null;
+					return;
+				}
+				var isOk = current_range.indexOf(pos.index) != -1;	
+				if(isOk){
+					rangeHover(false);
+					map.hoverOff(current_pos);
+					map.move(current_pos, pos);
+					status = 0;
+					current_pos = null;
+					current_range = null;
+				}
+			}
+		}
+		var aim = (function(){
+			var aim_pos = null;
+			var lean_pos = null;
+			function getIndex(c_role){
+				if(lean_pos && aim_pos){
+					if(c_role != aim_pos.role){
+						return aim_pos.index;
+					}
+				}
+				return -1;
+			}
+			function setSmallAim(pos){
+				if(lean_pos){
+					aim_pos = pos;
+				}else{			
+					lean_pos = pos;
+				}
+			}
+			function setBigAim(pos){
+				if(lean_pos){
+					aim_pos = lean_pos;
+					lean_pos = pos;
+				}else if(aim_pos){
+					lean_pos = pos;
+				}else{
+					aim_pos = pos;
+				}
+			}
+			function mensLean(type, pos){
+				if(type == 'h' ? pos.x < lean_pos.x : pos.y < lean_pos.y){
+					return true;
+				}
+				return false;
+			}
+			function hasLean(){
+				return lean_pos ? true : false;
+			}
+			function clear(){
+				aim_pos = null;
+				lean_pos = null;
+			}
+			return {
+				mensLean:mensLean,
+				hasLean:hasLean,
+				setSmallAim:setSmallAim,
+				setBigAim:setBigAim,
+				getIndex:getIndex,
+				clear:clear
+			};
+		})();
+		function pao_RangeFilter(type, o_range, c_index, c_role){
+			var range = [];
+			o_range.every(function(i_pos){
+				var index = i_pos.index;
+				var role = i_pos.role;
+				if(index == c_index){
+					range.push(aim.getIndex());
+					aim.clear();
+				}else if(index > c_index){
+					if(role){
+						range = [];
+						aim.setBigAim(i_pos);
+					}else{
+						if(!aim.hasLean() || aim.mensLean(type, i_pos)){
+							range.push(index);
+						}
+					}
+				}else{
+					if(role){
+						aim.setSmallAim(i_pos);
+						if(aim.getIndex() != -1){
+							return false;
+						}
+					}else{
+						if(!aim.hasLean()){
+							range.push(index);
+						}
+					}
+				}
+				return true;
+			});
+			return range;
+		}
+		function che_RangeFilter(o_range, c_index, c_role){
+			var range = [];
+			o_range.every(function(pos){
+				var index = pos.index;
+				var role = pos.role;
+				if(index > c_index){
+					if(role){
+						range = [];
+					}
+					range.push(index);
+				}else{
+					range.push(index);
+					if(role && index != c_index){
+						return false;
+					}
+				}
+				return true;
+			})
+			return range;
+		}
+		function getHVRange(type, len, origin_num){
+			var range = [];
+			for(var i=len;i>0;i--){
+				var index = type == 'v' ? 
+							map.getIndexByXY(origin_num, i) : 
+							map.getIndexByXY(i,origin_num);
+				var pos = map.getPosByIndex(index);
+				pos && range.push(pos);
+			}
+			return range;	
+		}
+		function qizi_rangeFilter(pos, o_range, filter){
+			var range = [];
+			o_range.forEach(function(index, i){
+				var i_pos = map.getPosByIndex(index);
+				if(i_pos && pos.role != i_pos.role){
+					if(!filter || (filter.indexOf(index)!=-1)){
+						range.push(index);
+					}
+				}
+			});
+			return range;
+		}
+		function getCareerRange(c_pos){
+			var ret = [];
+			var range = [];
+			var filter = null;
+			var c_x = c_pos.x;
+			var c_y = c_pos.y;
+			var c_role = c_pos.role;
+			var c_index = c_pos.index;
+			function pushRange(items, check){
+				if(check){
+					if(map.isEmptyPos(check[0],check[1])){
+						items.forEach(function(item){
+							range.push(map.getIndexByXY(item[0],item[1]));
+						})
+					}
+				}else{
+					range.push(map.getIndexByXY(items[0],items[1]));
+				}
+				
+			}
+			switch(c_pos.career){
+				case 'zu':
+					if(c_role == "r"){
+						pushRange([c_x,c_y+1]);
+						if(c_pos.belong != c_role){
+							pushRange([c_x-1,c_y]);
+							pushRange([c_x+1,c_y]);
+						}
+					}else{
+						pushRange([c_x,c_y-1]);
+						if(c_pos.belong != c_role){
+							pushRange([c_x-1,c_y]);
+							pushRange([c_x+1,c_y]);
+						}
+					}
+					break;
+				case 'pao':
+					var x_range = getHVRange('h', 9, c_y);
+					var y_range = getHVRange('v', 10, c_x);
+					x_range = pao_RangeFilter('h', x_range, c_index, c_role);
+					x_range.push(aim.getIndex());
+					aim.clear();
+					y_range = pao_RangeFilter('v', y_range, c_index, c_role);
+					y_range.push(aim.getIndex());
+					aim.clear();
+					range = x_range.concat(y_range);
+					break;
+				case 'che':
+					var x_range = getHVRange('h', 9, c_y);
+					var y_range = getHVRange('v', 10, c_x);
+					x_range = che_RangeFilter(x_range, c_index, c_role);
+					y_range = che_RangeFilter(y_range, c_index, c_role);
+					range = x_range.concat(y_range);
+					break;
+				case 'ma':
+					pushRange([[c_x-1,c_y-2],[c_x+1,c_y-2]],[c_x,c_y-1]);
+					pushRange([[c_x+2,c_y-1],[c_x+2,c_y+1]],[c_x+1,c_y]);
+					pushRange([[c_x-1,c_y+2],[c_x+1,c_y+2]],[c_x,c_y+1]);
+					pushRange([[c_x-2,c_y-1],[c_x-2,c_y+1]],[c_x-1,c_y]);
+					break;
+				case 'xiang':
+					pushRange([[c_x-2,c_y-2]],[c_x-1,c_y-1]);
+					pushRange([[c_x+2,c_y-2]],[c_x+1,c_y-1]);
+					pushRange([[c_x-2,c_y+2]],[c_x-1,c_y+1]);
+					pushRange([[c_x+2,c_y+2]],[c_x+1,c_y+1]);
+					filter = map.getWall(c_role);
+					break;
+				case 'shi':
+					pushRange([c_x-1,c_y-1]);
+					pushRange([c_x+1,c_y-1]);
+					pushRange([c_x-1,c_y+1]);
+					pushRange([c_x+1,c_y+1]);
+					filter = map.getHouse(c_role); 
+					break;
+				case 'shuai':
+					pushRange([c_x,c_y-1]);
+					pushRange([c_x,c_y+1]);
+					pushRange([c_x+1,c_y]);
+					pushRange([c_x-1,c_y]);
+					filter = map.getHouse(c_role); 
+					break;
+				default:
+			}
+			ret = qizi_rangeFilter(c_pos, range, filter);
+			return ret;
+		}
+		function start(){
+			map.init({
+				manual:manual,
+				onClick:onMapClick
+			});
+		}
+		return {
+			start:start
+		};
+	})();
+	game.start();
+	</script>
+</body>
+</html>
