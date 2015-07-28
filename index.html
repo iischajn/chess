@@ -12,216 +12,143 @@
 	<script type="text/javascript" src="js/jquery.soul.js"></script>
 	<script type="text/javascript" src="js/jquery.coord.js"></script>
 	<script type="text/javascript">
-	// var zu = new Career('zu');
-	// var pao = new Career('pao');
-	// var che = new Career('che');
-	// var ma = new Career('ma');
-	// var xiang = new Career('xiang');
-	// var shi = new Career('shi');
-	// var shuai = new Career('shuai');
-	
-	// var r = new Ideology('r');
-	// var b = new Ideology('b');
+	var Actor = $.soul.instance('actor');
+	var crowd = {
+		"0":{"role":"r","career":"che","coord":{"x":1,"y":1},"index":0},
+		"1":{"role":"r","career":"ma","coord":{"x":2,"y":1},"index":1},
+		"2":{"role":"r","career":"xiang","coord":{"x":3,"y":1},"index":2},
+		"3":{"role":"r","career":"shi","coord":{"x":4,"y":1},"index":3},
+		"4":{"role":"r","career":"shuai","coord":{"x":5,"y":1},"index":4},
+		"5":{"role":"r","career":"shi","coord":{"x":6,"y":1},"index":5},
+		"6":{"role":"r","career":"xiang","coord":{"x":7,"y":1},"index":6},
+		"7":{"role":"r","career":"ma","coord":{"x":8,"y":1},"index":7},
+		"8":{"role":"r","career":"che","coord":{"x":9,"y":1},"index":8},
+		"19":{"role":"r","career":"pao","coord":{"x":2,"y":3},"index":19},
+		"25":{"role":"r","career":"pao","coord":{"x":8,"y":3},"index":25},
+		"27":{"role":"r","career":"zu","coord":{"x":1,"y":4},"index":27},
+		"29":{"role":"r","career":"zu","coord":{"x":3,"y":4},"index":29},
+		"31":{"role":"r","career":"zu","coord":{"x":5,"y":4},"index":31},
+		"33":{"role":"r","career":"zu","coord":{"x":7,"y":4},"index":33},
+		"35":{"role":"r","career":"zu","coord":{"x":9,"y":4},"index":35},
+		"54":{"role":"b","career":"zu","coord":{"x":1,"y":7},"index":54},
+		"56":{"role":"b","career":"zu","coord":{"x":3,"y":7},"index":56},
+		"58":{"role":"b","career":"zu","coord":{"x":5,"y":7},"index":58},
+		"60":{"role":"b","career":"zu","coord":{"x":7,"y":7},"index":60},
+		"62":{"role":"b","career":"zu","coord":{"x":9,"y":7},"index":62},
+		"64":{"role":"b","career":"pao","coord":{"x":2,"y":8},"index":64},
+		"70":{"role":"b","career":"pao","coord":{"x":8,"y":8},"index":70},
+		"81":{"role":"b","career":"che","coord":{"x":1,"y":10},"index":81},
+		"82":{"role":"b","career":"ma","coord":{"x":2,"y":10},"index":82},
+		"83":{"role":"b","career":"xiang","coord":{"x":3,"y":10},"index":83},
+		"84":{"role":"b","career":"shi","coord":{"x":4,"y":10},"index":84},
+		"85":{"role":"b","career":"shuai","coord":{"x":5,"y":10},"index":85},
+		"86":{"role":"b","career":"shi","coord":{"x":6,"y":10},"index":86},
+		"87":{"role":"b","career":"xiang","coord":{"x":7,"y":10},"index":87},
+		"88":{"role":"b","career":"ma","coord":{"x":8,"y":10},"index":88},
+		"89":{"role":"b","career":"che","coord":{"x":9,"y":10},"index":89}
+	};
+	Actor.fill(crowd);
 
-	// var crowd = [
-	// 	{role:r, career:che, x:1, y:1},
-	// 	{role:r, career:ma, x:2, y:1},
-	// 	{role:r, career:xiang, x:3, y:1},
-	// 	{role:r, career:shi, x:4, y:1},
-	// 	{role:r, career:shuai, x:5, y:1},
-	// 	{role:r, career:shi, x:6, y:1},
-	// 	{role:r, career:xiang, x:7, y:1},
-	// 	{role:r, career:ma, x:8, y:1},
-	// 	{role:r, career:che, x:9, y:1},
-	// 	{role:r, career:pao, x:2, y:3},
-	// 	{role:r, career:pao, x:8, y:3},
-	// 	{role:r, career:zu, x:1, y:4},
-	// 	{role:r, career:zu, x:3, y:4},
-	// 	{role:r, career:zu, x:5, y:4},
-	// 	{role:r, career:zu, x:7, y:4},
-	// 	{role:r, career:zu, x:9, y:4},
-	// 	{role:b, career:che, x:1, y:10},
-	// 	{role:b, career:ma, x:2, y:10},
-	// 	{role:b, career:xiang, x:3, y:10},
-	// 	{role:b, career:shi, x:4, y:10},
-	// 	{role:b, career:shuai, x:5, y:10},
-	// 	{role:b, career:shi, x:6, y:10},
-	// 	{role:b, career:xiang, x:7, y:10},
-	// 	{role:b, career:ma, x:8, y:10},
-	// 	{role:b, career:che, x:9, y:10},
-	// 	{role:b, career:pao, x:2, y:8},
-	// 	{role:b, career:pao, x:8, y:8},
-	// 	{role:b, career:zu, x:1, y:7},
-	// 	{role:b, career:zu, x:3, y:7},
-	// 	{role:b, career:zu, x:5, y:7},
-	// 	{role:b, career:zu, x:7, y:7},
-	// 	{role:b, career:zu, x:9, y:7}
-	// ];
-	
-	// Actor.create(crowd);
-
-	
-
-	var coord = $.coord.instance({
+	coordManager = $.coord.instance({
         box: $('#qizi_area'),
 		row:9,
         col:10,
         width:104,
         height:100,
-        offset:0//-40
+        offset:0,//-40
+        onClick:onCoordClick
+    });
+    coordManager.cube.run(function(item, index){
+    	if(item.index > 35){
+    		item.data.belong = 'b';
+    	}else{
+    		item.data.belong = 'r';
+    	}
     });
 
-    coord.cube.run(createItemEl);
-    function createItemEl(item){
-        var el = $('<li>');
+    Actor.run(function(pawn, index){
+        var pawnCoord = coordManager.getItemByIndex(pawn.index);
+    	var el = $('<li>');
         el.attr({
-            'class':'item empty',
-            'index':item.index
+            'class':'item empty',// + pawn.role+'-'+pawn.career,
+            'index':pawn.index
         }).css({
-            'top':item.top,
-            'left':item.left
+            'top':pawnCoord.top,
+            'left':pawnCoord.left
         });
-        el.html(item.index+':'+item.x+','+item.y);
-        coord.box.append(el);
+        el.html(pawn.index);
+        pawn.el = el;
+        pawnCoord.data.pawn = pawn;
+        coordManager.box.append(el);
+    });
+    
+    function move(startPawn, endPawn){
+        var s_cn = endPawn.role ? endPawn.role+'-'+endPawn.career : 'empty';
+        endPawn.el.classList.remove(s_cn);
+
+        var c_cn = startPawn.role+'-'+startPawn.career;
+        endPawn.el.classList.add(c_cn);
+        endPawn.role = startPawn.role;
+        endPawn.career = startPawn.career;              
+
+        startPawn.el.classList.remove(c_cn);
+        startPawn.el.classList.add('empty');
+        startPawn.role = null;
+        startPawn.career = null;
     }
-    // function createItemEl(cn, left, top, index){
-    //     var el = $('<li>');
-    //     el.attr({
-    //         'class':'item '+cn,
-    //         'index':index
-    //     }).setStyle({
-    //         'top':top,
-    //         'left':left
-    //     });
-    //     area.append(el);
-    //     return el;
-    // }
-//         function hoverOn(pos){
-//             pos.el.addClass('hover');
-//         }
-//         function hoverOff(pos){
-//             pos.el.removeClass('hover');
-//         }
-//         function move(c_pos, pos){
-//             var s_cn = pos.role ? pos.role+'-'+pos.career : 'empty';
-//             pos.el.classList.remove(s_cn);
 
-//             var c_cn = c_pos.role+'-'+c_pos.career;
-//             pos.el.classList.add(c_cn);
-//             pos.role = c_pos.role;
-//             pos.career = c_pos.career;              
+	function hover(el, is_hover){
+        is_hover ? el.addClass('hover') : el.removeClass('hover');
+    }
 
-//             c_pos.el.classList.remove(c_cn);
-//             c_pos.el.classList.add('empty');
-//             c_pos.role = null;
-//             c_pos.career = null;
-//         }
+	function rangeHover(range){
+		range.forEach(function(index){
+			var coord = coordManager.getPosByIndex(index);
+			isOn ? hover(coord.el, true) : hover(coord.el, false);
+		})
+	}
+	var game = {
+		round: 0,
+		actor:{
+			role: 'r',
+			status: 0,
+			pawn:null,
+			range:null
+		},
+		status: 'doing'
+	};
 
+	function onCoordClick(coord){
+		var pawn = coord.data.pawn;
+		var actor = game.actor;
 
+		if(game.status != 'doing'){
+			return false;
+		}
+		if(actor.role != pawn.role){
+			return false;
+		}
 
-	// map.init({
-	// 	manual:manual,
-	// 	onClick:onMapClick
-	// });
-	// map.build();
+		if(actor.status == 0){
+			actor.status = 1;
+			actor.pawn = pawn;
+			actor.range = getCareerRange(coord);
+			hover(pawn.el, true);
+			rangeHover(actor.range, true);
+		}else{
+			var is_range = $.inArray(actor.range, pawn.index) != -1;
+			if(is_range){
+				move(actor.pawn, pawn);
+				actor.role = actor.role == 'r' ? 'b' : 'r';
+			}
+			hover(actor.pawn, false);
+			rangeHover(actor.range, false);
+			actor.status = 0;
+			actor.pawn = null;
+			actor.range = null;
+		}
+	}
 
-	// var status = 0;
-	// var current_pos = null;
-	// var current_range = null;
-
- //    function getWall(role){
- //        return role == 'r' ? [2,6,18,22,26,38,44] : [47,51,63,67,71,83,87];
- //    }
- //    function getHouse(role){
- //        return role == 'r' ? [3,4,5,12,13,14,21,22,23] : [66,67,68,75,76,77,84,85,86];
- //    }
-
-	// function rangeHover(isOn){
-	// 	current_range.forEach(function(index){
-	// 		var pos = map.getPosByIndex(index);
-	// 		isOn ? map.hoverOn(pos) : map.hoverOff(pos);;
-	// 	})
-	// }
-
-	// function onMapClick(pos){
-	// 	if(status == 0 && !pos.role){
-	// 		return false;
-	// 	}else if(status == 0 && pos.role){
-	// 		current_pos = pos;
-	// 		current_range = getCareerRange(current_pos);
-	// 		map.hoverOn(current_pos);
-	// 		rangeHover(true);
-	// 		status = 1;
-	// 	}else{
-	// 		if(current_pos && current_pos.index == pos.index){
-	// 			rangeHover(false);
-	// 			map.hoverOff(current_pos);
-	// 			status = 0;
-	// 			current_pos = null;
-	// 			current_range = null;
-	// 			return;
-	// 		}
-	// 		var isOk = current_range.indexOf(pos.index) != -1;	
-	// 		if(isOk){
-	// 			rangeHover(false);
-	// 			map.hoverOff(current_pos);
-	// 			map.move(current_pos, pos);
-	// 			status = 0;
-	// 			current_pos = null;
-	// 			current_range = null;
-	// 		}
-	// 	}
-	// }
-	// var aim = (function(){
-	// 	var aim_pos = null;
-	// 	var lean_pos = null;
-	// 	function getIndex(c_role){
-	// 		if(lean_pos && aim_pos){
-	// 			if(c_role != aim_pos.role){
-	// 				return aim_pos.index;
-	// 			}
-	// 		}
-	// 		return -1;
-	// 	}
-	// 	function setSmallAim(pos){
-	// 		if(lean_pos){
-	// 			aim_pos = pos;
-	// 		}else{			
-	// 			lean_pos = pos;
-	// 		}
-	// 	}
-	// 	function setBigAim(pos){
-	// 		if(lean_pos){
-	// 			aim_pos = lean_pos;
-	// 			lean_pos = pos;
-	// 		}else if(aim_pos){
-	// 			lean_pos = pos;
-	// 		}else{
-	// 			aim_pos = pos;
-	// 		}
-	// 	}
-	// 	function mensLean(type, pos){
-	// 		if(type == 'h' ? pos.x < lean_pos.x : pos.y < lean_pos.y){
-	// 			return true;
-	// 		}
-	// 		return false;
-	// 	}
-	// 	function hasLean(){
-	// 		return lean_pos ? true : false;
-	// 	}
-	// 	function clear(){
-	// 		aim_pos = null;
-	// 		lean_pos = null;
-	// 	}
-	// 	return {
-	// 		mensLean:mensLean,
-	// 		hasLean:hasLean,
-	// 		setSmallAim:setSmallAim,
-	// 		setBigAim:setBigAim,
-	// 		getIndex:getIndex,
-	// 		clear:clear
-	// 	};
-	// })();
 
 	// function pao_RangeFilter(type, o_range, c_index, c_role){
 	// 	var range = [];
@@ -301,92 +228,188 @@
 	// 	});
 	// 	return range;
 	// }
-	// function getCareerRange(c_pos){
-	// 	var ret = [];
-	// 	var range = [];
-	// 	var filter = null;
-	// 	var c_x = c_pos.x;
-	// 	var c_y = c_pos.y;
-	// 	var c_role = c_pos.role;
-	// 	var c_index = c_pos.index;
-	// 	function pushRange(items, check){
-	// 		if(check){
-	// 			if(map.isEmptyPos(check[0],check[1])){
-	// 				items.forEach(function(item){
-	// 					range.push(map.getIndexByXY(item[0],item[1]));
-	// 				})
-	// 			}
-	// 		}else{
-	// 			range.push(map.getIndexByXY(items[0],items[1]));
-	// 		}
+
+	var Limiter = $.soul.instance('limiter');
+
+	Limiter.create('filter', function(coord, range) {
+	    var career = coord.data.pawn.career;
+	    var filetr = Limiter.get(career);
+
+	    range = filetr(range);
+	    
+	    return range;
+	});
+
+	Limiter.create('white', function(range, filter) {
+	    var ret = [];
+	    $.each(range, function(i, index) {
+	        $.inArray(filter, index) != -1 && ret.push(index);
+	    })
+	    return ret;
+	});
+
+	Limiter.create('house', function(range, role) {
+	    var ret = [];
+	    var filter = role == 'r' ? [3, 4, 5, 12, 13, 14, 21, 22, 23] : [66, 67, 68, 75, 76, 77, 84, 85, 86];
+	    Limiter.white(range, filter);
+	    return ret;
+	});
+
+	Limiter.create('wall', function(range, role) {
+	    var ret = [];
+	    var filter = role == 'r' ? [2, 6, 18, 22, 26, 38, 44] : [47, 51, 63, 67, 71, 83, 87];
+	    Limiter.white(range, filter);
+	    return ret;
+	});
+
+	Limiter.in('shuai', function(coord, range){
+		var role = coord.data.pawn.role;
+	    return Limiter.house(range, role);
+	});
+
+	Limiter.in('shi', function(coord, range){
+		var role = coord.data.pawn.role;
+	    return Limiter.house(range, role);
+	});
+
+	Limiter.in('xiang', function(coord, range){
+		var role = coord.data.pawn.role;
+	    var pawn = coord.data.pawn;
+	    var x = pawn.x;
+	    var y = pawn.y;
+	    var pindex = pawn.index;
+	    
+	    var range = Limiter.wall(range, role);
+	    var ret = [];
+
+	    $.each(range, function(i, item){
+	        var min = Math.min(pindex, item);
+	        var max = Math.max(pindex, item);
+	        var index = min + (max - min)/2;
+	        if(coordManager.isEmptyPos(index))}{
+	            ret.push(item);
+	        }
+	    });
+
+	    return ret;
+	});
+
+	function getCareerRange(coord){
+		var ret = [];
+		var range = Career.getActRange(coord);
+		var indexRange = [];
+		$.each(range, function(i, item){
+			var index = coord.getIndexByCoord(item[0], item[1]);
+			indexRange[i] = index;
+		});
+		range = Limiter.filter(coord, indexRange);
+
+		// function pushRange(items, check){
+		// 	if(check){
+		// 		if(map.isEmptyPos(check[0],check[1])){
+		// 			items.forEach(function(item){
+		// 				range.push(map.getIndexByXY(item[0],item[1]));
+		// 			})
+		// 		}
+		// 	}else{
+		// 		range.push(map.getIndexByXY(items[0],items[1]));
+		// 	}
 			
-	// 	}
-	// 	switch(c_pos.career){
-	// 		case 'zu':
-	// 			if(c_role == "r"){
-	// 				pushRange([c_x,c_y+1]);
-	// 				if(c_pos.belong != c_role){
-	// 					pushRange([c_x-1,c_y]);
-	// 					pushRange([c_x+1,c_y]);
-	// 				}
-	// 			}else{
-	// 				pushRange([c_x,c_y-1]);
-	// 				if(c_pos.belong != c_role){
-	// 					pushRange([c_x-1,c_y]);
-	// 					pushRange([c_x+1,c_y]);
-	// 				}
+		// }
+
+		console.log(range);
+		return;
+
+
+
+
+        // filter = map.getWall(c_role);
+        // break;
+
+		// ret = qizi_rangeFilter(coord, range, filter);
+		// return ret;
+
+		switch(c_pos.career){
+			case 'pao':
+				var x_range = getHVRange('h', 9, c_y);
+				var y_range = getHVRange('v', 10, c_x);
+				x_range = pao_RangeFilter('h', x_range, c_index, c_role);
+				x_range.push(aim.getIndex());
+				aim.clear();
+				y_range = pao_RangeFilter('v', y_range, c_index, c_role);
+				y_range.push(aim.getIndex());
+				aim.clear();
+				range = x_range.concat(y_range);
+				break;
+			case 'che':
+				var x_range = getHVRange('h', 9, c_y);
+				var y_range = getHVRange('v', 10, c_x);
+				x_range = che_RangeFilter(x_range, c_index, c_role);
+				y_range = che_RangeFilter(y_range, c_index, c_role);
+				range = x_range.concat(y_range);
+				break;
+			case 'ma':
+				pushRange([[c_x-1,c_y-2],[c_x+1,c_y-2]],[c_x,c_y-1]);
+				pushRange([[c_x+2,c_y-1],[c_x+2,c_y+1]],[c_x+1,c_y]);
+				pushRange([[c_x-1,c_y+2],[c_x+1,c_y+2]],[c_x,c_y+1]);
+				pushRange([[c_x-2,c_y-1],[c_x-2,c_y+1]],[c_x-1,c_y]);
+				break;
+
+
+
+		}
+	}
+
+	// var aim = (function(){
+	// 	var aim_pos = null;
+	// 	var lean_pos = null;
+	// 	function getIndex(c_role){
+	// 		if(lean_pos && aim_pos){
+	// 			if(c_role != aim_pos.role){
+	// 				return aim_pos.index;
 	// 			}
-	// 			break;
-	// 		case 'pao':
-	// 			var x_range = getHVRange('h', 9, c_y);
-	// 			var y_range = getHVRange('v', 10, c_x);
-	// 			x_range = pao_RangeFilter('h', x_range, c_index, c_role);
-	// 			x_range.push(aim.getIndex());
-	// 			aim.clear();
-	// 			y_range = pao_RangeFilter('v', y_range, c_index, c_role);
-	// 			y_range.push(aim.getIndex());
-	// 			aim.clear();
-	// 			range = x_range.concat(y_range);
-	// 			break;
-	// 		case 'che':
-	// 			var x_range = getHVRange('h', 9, c_y);
-	// 			var y_range = getHVRange('v', 10, c_x);
-	// 			x_range = che_RangeFilter(x_range, c_index, c_role);
-	// 			y_range = che_RangeFilter(y_range, c_index, c_role);
-	// 			range = x_range.concat(y_range);
-	// 			break;
-	// 		case 'ma':
-	// 			pushRange([[c_x-1,c_y-2],[c_x+1,c_y-2]],[c_x,c_y-1]);
-	// 			pushRange([[c_x+2,c_y-1],[c_x+2,c_y+1]],[c_x+1,c_y]);
-	// 			pushRange([[c_x-1,c_y+2],[c_x+1,c_y+2]],[c_x,c_y+1]);
-	// 			pushRange([[c_x-2,c_y-1],[c_x-2,c_y+1]],[c_x-1,c_y]);
-	// 			break;
-	// 		case 'xiang':
-	// 			pushRange([[c_x-2,c_y-2]],[c_x-1,c_y-1]);
-	// 			pushRange([[c_x+2,c_y-2]],[c_x+1,c_y-1]);
-	// 			pushRange([[c_x-2,c_y+2]],[c_x-1,c_y+1]);
-	// 			pushRange([[c_x+2,c_y+2]],[c_x+1,c_y+1]);
-	// 			filter = map.getWall(c_role);
-	// 			break;
-	// 		case 'shi':
-	// 			pushRange([c_x-1,c_y-1]);
-	// 			pushRange([c_x+1,c_y-1]);
-	// 			pushRange([c_x-1,c_y+1]);
-	// 			pushRange([c_x+1,c_y+1]);
-	// 			filter = map.getHouse(c_role); 
-	// 			break;
-	// 		case 'shuai':
-	// 			pushRange([c_x,c_y-1]);
-	// 			pushRange([c_x,c_y+1]);
-	// 			pushRange([c_x+1,c_y]);
-	// 			pushRange([c_x-1,c_y]);
-	// 			filter = map.getHouse(c_role); 
-	// 			break;
-	// 		default:
+	// 		}
+	// 		return -1;
 	// 	}
-	// 	ret = qizi_rangeFilter(c_pos, range, filter);
-	// 	return ret;
-	// }
+	// 	function setSmallAim(pos){
+	// 		if(lean_pos){
+	// 			aim_pos = pos;
+	// 		}else{			
+	// 			lean_pos = pos;
+	// 		}
+	// 	}
+	// 	function setBigAim(pos){
+	// 		if(lean_pos){
+	// 			aim_pos = lean_pos;
+	// 			lean_pos = pos;
+	// 		}else if(aim_pos){
+	// 			lean_pos = pos;
+	// 		}else{
+	// 			aim_pos = pos;
+	// 		}
+	// 	}
+	// 	function mensLean(type, pos){
+	// 		if(type == 'h' ? pos.x < lean_pos.x : pos.y < lean_pos.y){
+	// 			return true;
+	// 		}
+	// 		return false;
+	// 	}
+	// 	function hasLean(){
+	// 		return lean_pos ? true : false;
+	// 	}
+	// 	function clear(){
+	// 		aim_pos = null;
+	// 		lean_pos = null;
+	// 	}
+	// 	return {
+	// 		mensLean:mensLean,
+	// 		hasLean:hasLean,
+	// 		setSmallAim:setSmallAim,
+	// 		setBigAim:setBigAim,
+	// 		getIndex:getIndex,
+	// 		clear:clear
+	// 	};
+	// })();
 	</script>
 </body>
 </html>

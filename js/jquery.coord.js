@@ -15,47 +15,23 @@
             pos.left = dot*that.width+that.offset;
             pos.top = c_row*that.height+that.offset;
             pos.index = i;
-            pos.data = null;
+            pos.data = {};
             that.cube.in(pos.index, pos);
         }
 
         that.box.on('click', onClick); 
 
         function onClick(e){
-            console.log(e);
-            var x = e.offsetX;
-            var y = e.offsetY;
-            var index = that.getIndexsByOffset(x, y);
-            console.log(index);
+            var x = e.pageX;
+            var y = e.pageY;
+            var index = that.getIndexsByPage(x, y);
             var item = that.getItemByIndex(index);
+            console.log(index);
             that.onClick && that.onClick(item);
         }
-        // opt.manual && build(opt.manual);     
     }
 
     $.extend(Coord.prototype, {
-        buildAll: function(manual){
-            for(var i=0, len=manual.length;i<len;i++){
-                var item = manual[i];
-                var pos = this.getItem(item.x, item.y);
-                var el = createItemEl(item.role+'-'+item.career, pos.left, pos.top, pos.index);
-                pos.data = {
-                    el:el,
-                    param: item
-                }
-            }
-        },
-        build: function(manual){
-            for(var i=0, len=manual.length;i<len;i++){
-                var item = manual[i];
-                var pos = this.getItem(item.x, item.y);
-                var el = createItemEl(item.role+'-'+item.career, pos.left, pos.top, pos.index);
-                pos.data = {
-                    el:el,
-                    param: item
-                }
-            }
-        },
         isEmpty: function(row, col) {
             var pos = this.getItem(x, y);
             if(pos && pos.data){
@@ -76,14 +52,13 @@
             }
             return (row-1)+(col-1)*that.row;
         },
-        getIndexsByOffset: function(x, y) {
+        getIndexsByPage: function(x, y) {
             var that = this;
-
-            console.log(x,y);
+            var boxpos = that.box.offset()
+            x = x - boxpos.left;
+            y = y - boxpos.top;
             var row = Math.ceil((x-that.offset)/that.width);
             var col = Math.ceil((y-that.offset)/that.height);
-            console.log(row,col);
-
             return this.getIndexByCoord(row, col);
         },
     });

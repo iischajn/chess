@@ -18,7 +18,9 @@ drain 抽取能量池
 
     $.extend(Cube.prototype, {
         in: function(key, energy) {
-            key = key || Math.round((new Date()).getTime() * Math.random());
+            if(key == null){
+                key = Math.round((new Date()).getTime() * Math.random());
+            }
             this.memory[key] = energy;
             if(this.map.indexOf(key) == -1) {
                 this.map.push(key);
@@ -40,14 +42,15 @@ drain 抽取能量池
             });
         },
         run: function(of) {
-            var raw = [], i, len, energy, item;
+            var raw = [], i, len, energy, item, key;
             var is_continue = true;
             for(i = 0, len = this.map.length; i < len; i++) {
-                energy = this.memory[this.map[i]];
+                key = this.map[i];
+                energy = this.memory[key];
                 if(typeof energy == 'function') {
-                    item = energy(of);
+                    item = energy(of,key);
                 } else if(typeof of == 'function') {
-                    item = of(energy);
+                    item = of(energy,key);
                 } else {
                     item = energy;
                 }
