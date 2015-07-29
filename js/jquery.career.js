@@ -4,12 +4,13 @@ Career.create('getActRange', function(coord, coordManager) {
     var careerName = coord.data.pawn.career;
     var career = Career.get(careerName);
     var range = career.range(coord, coordManager);
-
     range = coordManager.getIndexsByCoordList(range);
-
+    
     if(career.filter){
         range = career.filter(coord, range, coordManager);
-    } 
+    }
+    range = coordManager.getItems(range, 'empty');
+
 
     return range;
 });
@@ -17,23 +18,19 @@ Career.create('getActRange', function(coord, coordManager) {
 Career.create('white', function(range, filter) {
     var ret = [];
     $.each(range, function(i, index) {
-        $.inArray(filter, index) != -1 && ret.push(index);
+        $.inArray(index, filter) != -1 && ret.push(index);
     })
     return ret;
 });
 
 Career.create('house', function(range, role) {
-    var ret = [];
     var filter = role == 'r' ? [3, 4, 5, 12, 13, 14, 21, 22, 23] : [66, 67, 68, 75, 76, 77, 84, 85, 86];
-    Career.white(range, filter);
-    return ret;
+    return Career.white(range, filter);
 });
 
 Career.create('wall', function(range, role) {
-    var ret = [];
-    var filter = role == 'r' ? [2, 6, 18, 22, 26, 38, 44] : [47, 51, 63, 67, 71, 83, 87];
-    Career.white(range, filter);
-    return ret;
+    var filter = role == 'r' ? [2, 6, 18, 22, 26, 38, 42] : [47, 51, 63, 67, 71, 83, 87];
+    return Career.white(range, filter);
 });
 
 Career.in('shuai', {
@@ -42,10 +39,9 @@ Career.in('shuai', {
         return Career.house(range, role);
     },
     range: function(coord) {
-        var pawn = coord.data.pawn;
         var range = [];
-        var x = pawn.x;
-        var y = pawn.y;
+        var x = coord.x;
+        var y = coord.y;
         range = range.concat([
             [x, y - 1],
             [x, y + 1],
@@ -61,10 +57,9 @@ Career.in('shi', {
         return Career.house(range, role);
     },
     range: function(coord) {
-        var pawn = coord.data.pawn;
         var range = [];
-        var x = pawn.x;
-        var y = pawn.y;
+        var x = coord.x;
+        var y = coord.y;
         range = range.concat([
             [x - 1, y - 1],
             [x + 1, y - 1],
@@ -78,17 +73,15 @@ Career.in('shi', {
 Career.in('xiang', {
     filter: function(coord, range, coordManager){
         var role = coord.data.pawn.role;
-        var pawn = coord.data.pawn;
-        var x = pawn.x;
-        var y = pawn.y;
-        var pindex = pawn.index;
+        var x = coord.x;
+        var y = coord.y;
         
         var range = Career.wall(range, role);
         var ret = [];
 
         $.each(range, function(i, item){
-            var min = Math.min(pindex, item);
-            var max = Math.max(pindex, item);
+            var min = Math.min(coord.index, item);
+            var max = Math.max(coord.index, item);
             var index = min + (max - min)/2;
             if(coordManager.isEmpty(index)){
                 ret.push(item);
@@ -98,10 +91,9 @@ Career.in('xiang', {
         return ret;
     },
     range: function(coord) {
-        var pawn = coord.data.pawn;
         var range = [];
-        var x = pawn.x;
-        var y = pawn.y;
+        var x = coord.x;
+        var y = coord.y;
 
         range = range.concat([
             [x-2,y-2],
@@ -116,17 +108,14 @@ Career.in('xiang', {
 
 Career.in('ma', {
     filter: function(coord, range, coordManager){
-        var role = coord.data.pawn.role;
-        var pawn = coord.data.pawn;
-        var x = pawn.x;
-        var y = pawn.y;
-        var pindex = pawn.index;
+        var x = coord.x;
+        var y = coord.y;
 
         var ret = [];
         for(var i=0,len=range.length;i<len;i=i+2){
             var num = (range[i] + range[i+1])/2;
-            var min = Math.min(pindex, num);
-            var max = Math.max(pindex, num);
+            var min = Math.min(coord.index, num);
+            var max = Math.max(coord.index, num);
             var index = min + (max - min)/2;
             if(coordManager.isEmpty(index)){
                 ret.push(range[i]);
@@ -137,10 +126,9 @@ Career.in('ma', {
         return ret;
     },
     range: function(coord) {
-        var pawn = coord.data.pawn;
         var range = [];
-        var x = pawn.x;
-        var y = pawn.y;
+        var x = coord.x;
+        var y = coord.y;
 
         range = range.concat([
             [x-1,y-2],[x+1,y-2], 
@@ -154,36 +142,36 @@ Career.in('ma', {
 });
 Career.in('che', {
     range: function(coord, coordManager) {
-        var pawn = coord.data.pawn;
         var range = [];
-        var x = pawn.x;
-        var y = pawn.y;
+        var x = coord.x;
+        var y = coord.y;
         range = coordManager.getHVRange(x, y, 'all');
         return range;
     }
 });
 
 Career.in('pao', {
-    range: function(coord, coordManager) {
-        var pawn = coord.data.pawn;
-        var range = [];
-        var x = pawn.x;
-        var y = pawn.y;
-
-        range = coordManager.getHVRange(x, y, 'all');
-
+    filter: function(coord, range, coordManager){        
         var aimRange = [];
 
-        $.each(range, function(i, pos){
-            var item = coordManager.getItem(pos[0], pos[1]);
+        $.each(range, function(i, index){
+            var item = coordManager.getItemByIndex(index);
             if(!item.data.isEmpty){
-                var cpawn = item.data.pawn;
-                var type = cpawn.index < pawn.index ? 'before' : 'after';
-                aimRange = coordManager.getRange(cpawn.x, cpawn.y, 'before');
-                aimRange = coordManager.notEmpty(aimRange);
+                var type = item.index < coord.index ? 'before' : 'after';
+                aimRange = coordManager.getRange(item.x, item.y, 'before');
+                aimRange = coordManager.getIndexsByCoordList(aimRange);
+                aimRange = coordManager.getItems(aimRange, 'unempty');
             }
         });
-        range.concat(aimRange);
+
+        return range.concat(aimRange);
+    },
+    range: function(coord, coordManager) {
+        var range = [];
+        var x = coord.x;
+        var y = coord.y;
+
+        range = coordManager.getHVRange(x, y, 'all');
 
         // var x_range = getHVRange('h', 9, c_y);
         // var y_range = getHVRange('v', 10, c_x);
@@ -204,17 +192,16 @@ Career.in('pao', {
 Career.in('zu', {
     range: function(coord) {
         var belong = coord.data.belong;
-        var pawn = coord.data.pawn;
-        var role = pawn.role;
+        var role = coord.data.pawn.role;
         var range = [];
-        var x = pawn.x;
-        var y = pawn.y;
+        var x = coord.x;
+        var y = coord.y;
         var num = role == "r" ? 1 : -1;
 
         range.push([x, y + num]);
 
         if (belong != role) {
-            range = range.concat([x - 1, y], [x + 1, y]);
+            range = range.concat([[x - 1, y], [x + 1, y]]);
         }
 
         return range;

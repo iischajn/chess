@@ -35,13 +35,17 @@
     }
 
     $.extend(Coord.prototype, {
-        notEmpty: function(coords) {
+        getItems: function(indexs, checkType) {
             var that = this;
             var ret = [];
-            $.each(coords, function(i, coord){
-                var item = that.getItem(coord[0], coord[1]);
-                if(!item.data.isEmpty){
-                    ret.push[coord];
+            $.each(indexs, function(i, index){
+                var item = that.getItemByIndex(index);
+                if (!checkType || 
+                    (checkType == 'empty' && item.data.isEmpty) || 
+                    (checkType == 'unempty' && !item.data.isEmpty)){
+
+                    ret.push(index);
+                
                 }
             });
             return ret;
@@ -64,7 +68,7 @@
             var indexRange = [];
             $.each(range, function(i, item){
                 var index = that.getIndexByCoord(item[0], item[1]);
-                indexRange[i] = index;
+                index != -1 && indexRange.push(index);
             });
             return indexRange;
 
@@ -89,7 +93,7 @@
             //all, clash, before, after
             var that = this;
             var range = [];
-            for (var i = 0; i < size; i++) {
+            for (var i = 1; i <= size; i++) {
                 if (checkType != 'all' && !that.getItem(i, cons).data.isEmpty) {
                     if (i < center) {
                         range = [];
