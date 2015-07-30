@@ -73,7 +73,7 @@
             'top':item.top,
             'left':item.left
         });
-        el.html(item.index);
+        el.html(item.x+','+item.y);
         item.data.el = el;
         coordManager.box.append(el);
     });

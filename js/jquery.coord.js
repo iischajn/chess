@@ -35,7 +35,7 @@
     }
 
     $.extend(Coord.prototype, {
-        getItems: function(indexs, checkType) {
+        getItems: function(indexs, checkType, checkFunc) {
             var that = this;
             var ret = [];
             $.each(indexs, function(i, index){
@@ -43,16 +43,16 @@
                 if (!checkType || 
                     (checkType == 'empty' && item.data.isEmpty) || 
                     (checkType == 'unempty' && !item.data.isEmpty)){
-
                     ret.push(index);
-                
+                }else if(checkType == 'func' && checkFunc(item)){
+                    ret.push(index);
                 }
             });
             return ret;
         },
         isEmpty: function(index) {
             var pos = this.getItemByIndex(index);
-            if (pos && pos.data) {
+            if (pos && pos.data.isEmpty) {
                 return true;
             }
             return false;
@@ -89,17 +89,26 @@
             var col = Math.ceil((y - that.offset) / that.height);
             return this.getIndexByCoord(row, col);
         },
-        getRange: function(center, cons, size, checkType){
+        getRange: function(center, x, y, size, checkType){
             //all, clash, before, after
             var that = this;
             var range = [];
+            var isX = false;
+            if(!x){
+                isX = true;
+            }
             for (var i = 1; i <= size; i++) {
-                if (checkType != 'all' && !that.getItem(i, cons).data.isEmpty) {
+                if(isX){
+                    x = i;
+                }else{
+                    y = i;
+                }
+                if (checkType != 'all' && !that.getItem(x, y).data.isEmpty) {
                     if (i < center) {
                         range = [];
-                        range.push([i, cons]);
+                        range.push([x, y]);
                     } else if (i > center){
-                        range.push([i, cons]);
+                        range.push([x, y]);
                         break;
                     } else {
                         if(checkType == "before"){
@@ -109,7 +118,7 @@
                         }
                     }
                 }else{
-                    range.push([i, cons]);
+                    range.push([x, y]);
                 } 
             }  
             return range;
@@ -117,9 +126,12 @@
         getHVRange: function(x, y, checkType) {
             var that = this;
             var ret = [];
-            var xRange = that.getRange(x, y, that.row, checkType);
-            var yRange = that.getRange(y, x, that.col, checkType);
-            
+            var xRange = that.getRange(x, x, null, that.row, checkType);
+            var yRange = that.getRange(y, null, y, that.col, checkType);
+
+            console.log(JSON.stringify(xRange));
+            console.log(JSON.stringify(yRange));
+
             ret = ret.concat(xRange);
             ret = ret.concat(yRange);
 

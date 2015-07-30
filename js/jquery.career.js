@@ -9,7 +9,12 @@ Career.create('getActRange', function(coord, coordManager) {
     if(career.filter){
         range = career.filter(coord, range, coordManager);
     }
-    range = coordManager.getItems(range, 'empty');
+    range = coordManager.getItems(range, 'func', function(item){
+        if(item.pawn && item.pawn.role == coord.data.pawn.role){
+            return false;
+        }
+        return true;
+    });
 
 
     return range;
@@ -112,14 +117,19 @@ Career.in('ma', {
         var y = coord.y;
 
         var ret = [];
-        for(var i=0,len=range.length;i<len;i=i+2){
-            var num = (range[i] + range[i+1])/2;
-            var min = Math.min(coord.index, num);
-            var max = Math.max(coord.index, num);
-            var index = min + (max - min)/2;
+        for(var i=0,len=range.length;i<len;i++){
+            var item = coordManager.getItemByIndex(range[i]);
+            var xnum = (item.x + x)/2;
+            var ynum = (item.y + y)/2;
+            var index = null;
+            if(parseInt(xnum) == xnum){
+                index = coordManager.getIndexByCoord(xnum, y);
+            }else{
+                index = coordManager.getIndexByCoord(x, ynum);
+            }
+
             if(coordManager.isEmpty(index)){
                 ret.push(range[i]);
-                ret.push(range[i+1]);
             }
         }
         
