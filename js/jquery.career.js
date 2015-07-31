@@ -155,7 +155,7 @@ Career.in('che', {
         var range = [];
         var x = coord.x;
         var y = coord.y;
-        range = coordManager.getHVRange(x, y, 'all');
+        range = coordManager.getHVRange(x, y, 'clash');
         return range;
     }
 });

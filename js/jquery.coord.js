@@ -103,7 +103,12 @@
                 }else{
                     y = i;
                 }
-                if (checkType != 'all' && !that.getItem(x, y).data.isEmpty) {
+                if (checkType != 'all') {
+                    var item = that.getItem(x, y);
+                    if(item.data.isEmpty){
+                        range.push([x, y]);
+                        continue;
+                    }
                     if (i < center) {
                         range = [];
                         range.push([x, y]);
