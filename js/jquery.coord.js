@@ -131,8 +131,8 @@
         getHVRange: function(x, y, checkType) {
             var that = this;
             var ret = [];
-            var xRange = that.getRange(x, x, null, that.row, checkType);
-            var yRange = that.getRange(y, null, y, that.col, checkType);
+            var xRange = that.getRange(x, null, y, that.row, checkType);
+            var yRange = that.getRange(y, x, null, that.col, checkType);
 
             console.log(JSON.stringify(xRange));
             console.log(JSON.stringify(yRange));

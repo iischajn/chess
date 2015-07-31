@@ -10,7 +10,7 @@ Career.create('getActRange', function(coord, coordManager) {
         range = career.filter(coord, range, coordManager);
     }
     range = coordManager.getItems(range, 'func', function(item){
-        if(item.pawn && item.pawn.role == coord.data.pawn.role){
+        if(item.data.pawn && item.data.pawn.role == coord.data.pawn.role){
             return false;
         }
         return true;
