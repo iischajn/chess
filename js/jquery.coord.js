@@ -38,14 +38,20 @@
         getItems: function(indexs, checkType, checkFunc) {
             var that = this;
             var ret = [];
+            var is_index = true;
+            if(typeof indexs[0] == "object"){
+                indexs = that.getIndexsByCoordList(indexs);
+                is_index = false;
+            }
+
             $.each(indexs, function(i, index){
                 var item = that.getItemByIndex(index);
                 if (!checkType || 
                     (checkType == 'empty' && item.data.isEmpty) || 
                     (checkType == 'unempty' && !item.data.isEmpty)){
-                    ret.push(index);
+                    is_index ? ret.push(index): ret.push([item.x, item.y]);
                 }else if(checkType == 'func' && checkFunc(item)){
-                    ret.push(index);
+                    is_index ? ret.push(index): ret.push([item.x, item.y]);
                 }
             });
             return ret;
@@ -133,9 +139,6 @@
             var ret = [];
             var xRange = that.getRange(x, null, y, that.row, checkType);
             var yRange = that.getRange(y, x, null, that.col, checkType);
-
-            console.log(JSON.stringify(xRange));
-            console.log(JSON.stringify(yRange));
 
             ret = ret.concat(xRange);
             ret = ret.concat(yRange);
